@@ -1,2 +1,19 @@
-# autoenable-cloudflare-uam
-Auto-enable Cloudflare "Under Attack" mode
+# Autoenable Cloudflare UAM
+Auto-enable Cloudflare "Under Attack" mode when CPU load is high.
+
+## Installation
+1. Clone script.  
+`$ git clone https://github.com/cheenanet/autoenable-cloudflare-uam.git`
+2. Install `bc`, `jq`, and `curl` before run script.  
+Debian/Ubuntu: `$ sudo apt install bc jq curl`  
+Fedora/CentOS: `$ sudo yum install bc jq curl`
+
+## Configuration
+1. Get API token from Cloudflare dashboard.
+2. Set API token and Zone ID.
+```
+api_key=""
+zone_id=""
+```
+3. Add to crontab.  
+`*/20 * * * * /var/www/cloudflare-uam.sh`

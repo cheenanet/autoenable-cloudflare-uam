@@ -18,7 +18,7 @@ zone_id=""
 3. Set default security level and CPU load limit.
 ```
 default_security_level="high"
-max_uptime=2
+max_loadavg=2
 ```
 4. Add to crontab.  
 `*/20 * * * * /var/www/cloudflare-uam.sh`

@@ -6,6 +6,15 @@ zone_id=""
 default_security_level="high"
 max_loadavg=2
 
+# Check whether a command exists
+for command in bc jq curl
+do
+    if [[ ! $(type $command 2> /dev/null) ]]; then
+        echo "ERROR: ${command} not found."
+        exit
+    fi
+done
+
 if [[ -z $api_key || -z $zone_id ]]; then
     echo "Please set api_key and zone_id."
     exit

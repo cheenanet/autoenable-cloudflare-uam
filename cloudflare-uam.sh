@@ -25,31 +25,35 @@ if [ ! -e /proc/loadavg ]; then
     exit
 fi
 
-loadavg=`cut -d ' ' -f 1 /proc/loadavg`
+loadavg=$(cut -d ' ' -f 1 /proc/loadavg)
+
+api_url="https://api.cloudflare.com/client/v4/zones/$zone_id/settings/security_level"
 
 # Get Security Level setting
-current_security_level=`curl -X GET "https://api.cloudflare.com/client/v4/zones/$zone_id/settings/security_level" \
+current_security_level=$(curl -X GET "$api_url" \
     -H "Authorization: Bearer $api_key" \
-    -H "Content-Type: application/json" | jq -r '.result.value' --silent`
+    -H "Content-Type: application/json" \
+    --silent \
+    | jq -r '.result.value')
 
-if [ `echo "$max_loadavg < $loadavg" | bc` -eq 1 ] && [ $current_security_level = $default_security_level ]; then
+if [ $(echo "$max_loadavg < $loadavg" | bc) -eq 1 ] && [ "$current_security_level" = $default_security_level ]; then
     # Enable Under Attack Mode
-    result=`curl -X PATCH "https://api.cloudflare.com/client/v4/zones/$zone_id/settings/security_level" \
+    result=$(curl -X PATCH "$api_url" \
         -H "Authorization: Bearer $api_key" \
         -H "Content-Type: application/json" \
-        --data '{"value": "under_attack"}' --silent
-        | jq -r '.success'`
-    if [ $result = "true" ]; then
+        --data '{"value": "under_attack"}' --silent \
+        | jq -r '.success')
+    if [ "$result" = "true" ]; then
         echo "Under Attack mode enabled."
     fi
-elif [ `echo "$max_loadavg < $loadavg" | bc` -ne 1 ] && [ $current_security_level = "under_attack" ]; then
+elif [ $(echo "$max_loadavg < $loadavg" | bc) -ne 1 ] && [ "$current_security_level" = "under_attack" ]; then
     # Disable Under Attack Mode
-    result=`curl -X PATCH "https://api.cloudflare.com/client/v4/zones/$zone_id/settings/security_level" \
+    result=$(curl -X PATCH "$api_url" \
         -H "Authorization: Bearer $api_key" \
         -H "Content-Type: application/json" \
-        --data "{\"value\": \"$default_security_level\"}" --silent
-        | jq -r '.success'`
-    if [ $result = "true" ]; then
+        --data "{\"value\": \"$default_security_level\"}" --silent \
+        | jq -r '.success')
+    if [ "$result" = "true" ]; then
         echo "Under Attack mode disabled."
     fi
 else

@@ -9,7 +9,7 @@ Debian/Ubuntu: `$ sudo apt install bc jq curl`
 Fedora/CentOS: `$ sudo yum install bc jq curl`
 
 ## Configuration
-1. Get API token from Cloudflare dashboard.
+1. Create a new API token from [Cloudflare dashboard](https://dash.cloudflare.com/).
 2. Set API token and Zone ID.
 ```
 api_key=""
